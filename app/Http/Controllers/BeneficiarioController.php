@@ -6,9 +6,12 @@ use App\Http\Requests\BeneficiarioRequest;
 use App\Models\Atendimento;
 use App\Models\AtendimentoFoto;
 use App\Models\Beneficiario;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -98,6 +101,50 @@ class BeneficiarioController extends Controller
 
         return redirect()->route('beneficiarios.index')
             ->with('success', 'Cadastro excluído com sucesso.');
+    }
+
+    /** Ficha em PDF com dados e histórico de atendimentos (?fotos=1 inclui as fotos dos atendimentos). */
+    public function pdf(Request $request, Beneficiario $beneficiario): Response
+    {
+        $beneficiario->load('familiares', 'cadastradoPor', 'atendimentos.responsavel', 'atendimentos.fotos');
+        $comFotos = $request->boolean('fotos');
+
+        // Fotos ficam no disco privado: entram no PDF embutidas (data URI)
+        $embutir = function (?string $caminho): ?string {
+            $disco = Storage::disk('local');
+            if (! $caminho || ! $disco->exists($caminho)) {
+                return null;
+            }
+
+            return 'data:'.$disco->mimeType($caminho).';base64,'.base64_encode($disco->get($caminho));
+        };
+
+        $pdf = Pdf::loadView('beneficiarios.pdf', [
+            'b' => $beneficiario,
+            'foto' => $embutir($beneficiario->foto),
+            'fotosAtendimentos' => $comFotos
+                ? $beneficiario->atendimentos->mapWithKeys(fn ($a) => [
+                    $a->id => $a->fotos->map(fn ($f) => $embutir($f->caminho))->filter()->values(),
+                ])
+                : collect(),
+            'logo' => 'data:image/png;base64,'.base64_encode(file_get_contents(public_path('img/povlogo.png'))),
+            'geradoPor' => $request->user()->name,
+        ])->setPaper('a4');
+
+        // Numeração "Página X de Y" no rodapé
+        $dompdf = $pdf->getDomPDF();
+        $dompdf->render();
+        $canvas = $dompdf->getCanvas();
+        $fonte = $dompdf->getFontMetrics()->getFont('DejaVu Sans');
+        $canvas->page_text($canvas->get_width() - 110, $canvas->get_height() - 28, 'Página {PAGE_NUM} de {PAGE_COUNT}', $fonte, 7, [0.45, 0.45, 0.45]);
+
+        $arquivo = 'ficha-'.Str::slug($beneficiario->nome).'-'.now()->format('Y-m-d').'.pdf';
+
+        return response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="'.$arquivo.'"',
+            'Cache-Control' => 'private, no-store',
+        ]);
     }
 
     /** Exibe a foto (disco privado: só usuários logados têm acesso). */

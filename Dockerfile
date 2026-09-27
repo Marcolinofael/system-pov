@@ -12,9 +12,11 @@ RUN composer dump-autoload --optimize --no-dev --no-scripts
 # ---------- Imagem final (nginx + php-fpm) ----------
 FROM php:8.4-fpm-alpine
 
-RUN apk add --no-cache nginx supervisor icu-libs libzip \
-    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS icu-dev libzip-dev \
-    && docker-php-ext-install pdo_mysql intl zip bcmath opcache \
+# gd (com jpeg/freetype) é usado pelo DomPDF para colocar fotos nos PDFs
+RUN apk add --no-cache nginx supervisor icu-libs libzip libpng libjpeg-turbo freetype \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS icu-dev libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev \
+    && docker-php-ext-configure gd --with-jpeg --with-freetype \
+    && docker-php-ext-install pdo_mysql intl zip bcmath opcache gd \
     && apk del .build-deps
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

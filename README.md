@@ -14,6 +14,8 @@ Sistema Projeto Oberland JR Vive — Laravel 12 + AdminLTE 3 (PHP 8.4, MySQL 8).
   (reduzidas no navegador, guardadas em disco privado no volume `pov-storage`). Registro rápido
   pela ficha da família (linha do tempo) ou pela tela de Atendimentos, com filtros por período e tipo.
   Só o autor do registro ou um administrador pode editar/excluir.
+- **Ficha em PDF** do beneficiário (DomPDF): dados, composição familiar, situação socioeconômica e
+  histórico de atendimentos, opcionalmente com as fotos. Rodapé com aviso de confidencialidade (LGPD).
 - **Painel** com famílias ativas, pessoas alcançadas, atendimentos do mês, o que as famílias mais
   precisam e as famílias sem atendimento há mais de 60 dias
 

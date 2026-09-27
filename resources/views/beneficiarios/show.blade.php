@@ -8,6 +8,20 @@
     <div class="d-flex justify-content-between align-items-center flex-wrap">
         <h1 class="mb-2">{{ $beneficiario->nome_exibicao }}</h1>
         <div class="mb-2">
+            <div class="btn-group">
+                <a href="{{ route('beneficiarios.pdf', $beneficiario) }}" target="_blank" class="btn btn-pov-orange">
+                    <i class="fas fa-file-pdf"></i> Gerar PDF
+                </a>
+                <button type="button" class="btn btn-pov-orange dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-label="Mais opções de PDF"></button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="{{ route('beneficiarios.pdf', $beneficiario) }}" target="_blank">
+                        <i class="fas fa-file-alt mr-1"></i> Ficha e histórico
+                    </a>
+                    <a class="dropdown-item" href="{{ route('beneficiarios.pdf', [$beneficiario, 'fotos' => 1]) }}" target="_blank">
+                        <i class="fas fa-images mr-1"></i> Ficha e histórico com fotos
+                    </a>
+                </div>
+            </div>
             <a href="{{ route('beneficiarios.edit', $beneficiario) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Editar</a>
             <a href="{{ route('beneficiarios.index') }}" class="btn btn-default">Voltar</a>
         </div>

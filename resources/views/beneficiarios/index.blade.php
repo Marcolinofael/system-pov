@@ -101,6 +101,9 @@
                                 @endunless
                             </td>
                             <td class="text-right text-nowrap">
+                                <a href="{{ route('beneficiarios.pdf', $b) }}" target="_blank" class="btn btn-sm btn-warning" title="Gerar PDF">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
                                 <a href="{{ route('beneficiarios.edit', $b) }}" class="btn btn-sm btn-info" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>

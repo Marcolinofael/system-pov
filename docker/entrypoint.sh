@@ -17,7 +17,7 @@ fi
 
 [ -d public/vendor/adminlte ] || php artisan adminlte:install --only=assets --force --no-interaction
 
-mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs storage/fonts bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
 
 # Aguarda o banco ficar disponível e roda as migrations
