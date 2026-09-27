@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <form method="POST" action="{{ route('beneficiarios.update', $beneficiario) }}" novalidate>
+    <form method="POST" action="{{ route('beneficiarios.update', $beneficiario) }}" enctype="multipart/form-data" novalidate>
         @method('PUT')
         @include('beneficiarios._form')
     </form>

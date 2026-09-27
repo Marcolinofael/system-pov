@@ -8,7 +8,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BeneficiarioController extends Controller
 {
@@ -44,6 +46,8 @@ class BeneficiarioController extends Controller
             return $beneficiario;
         });
 
+        $this->salvarFoto($request, $beneficiario);
+
         return redirect()->route('beneficiarios.show', $beneficiario)
             ->with('success', 'Beneficiário cadastrado com sucesso.');
     }
@@ -72,21 +76,57 @@ class BeneficiarioController extends Controller
             $beneficiario->familiares()->createMany($request->validated('familiares', []));
         });
 
+        $this->salvarFoto($request, $beneficiario);
+
         return redirect()->route('beneficiarios.show', $beneficiario)
             ->with('success', 'Cadastro atualizado com sucesso.');
     }
 
     public function destroy(Beneficiario $beneficiario): RedirectResponse
     {
+        $foto = $beneficiario->foto;
         $beneficiario->delete();
+
+        if ($foto) {
+            Storage::disk('local')->delete($foto);
+        }
 
         return redirect()->route('beneficiarios.index')
             ->with('success', 'Cadastro excluído com sucesso.');
     }
 
+    /** Exibe a foto (disco privado: só usuários logados têm acesso). */
+    public function foto(Beneficiario $beneficiario): StreamedResponse
+    {
+        $disco = Storage::disk('local');
+
+        abort_unless($beneficiario->foto && $disco->exists($beneficiario->foto), 404);
+
+        return $disco->response($beneficiario->foto, null, ['Cache-Control' => 'private, max-age=604800']);
+    }
+
+    private function salvarFoto(BeneficiarioRequest $request, Beneficiario $beneficiario): void
+    {
+        $antiga = $beneficiario->foto;
+
+        if ($request->hasFile('foto')) {
+            $beneficiario->foto = $request->file('foto')->store('beneficiarios', 'local');
+        } elseif ($request->boolean('remover_foto')) {
+            $beneficiario->foto = null;
+        } else {
+            return;
+        }
+
+        $beneficiario->save();
+
+        if ($antiga && $antiga !== $beneficiario->foto) {
+            Storage::disk('local')->delete($antiga);
+        }
+    }
+
     private function dados(BeneficiarioRequest $request): array
     {
-        $dados = Arr::except($request->validated(), 'familiares');
+        $dados = Arr::except($request->validated(), ['familiares', 'foto', 'remover_foto']);
         $dados['data_cadastro'] ??= today();
 
         return $dados;

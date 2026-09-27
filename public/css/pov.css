@@ -254,6 +254,41 @@ h1, h2, h3, .card-title {
     color: #9a3f10;
 }
 
+/* Foto do beneficiário */
+.pov-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(6, 28, 98, .15);
+}
+
+.pov-avatar-inicial {
+    background: var(--pov-ice);
+    color: var(--pov-blue-dark);
+    font-weight: 600;
+}
+
+.pov-foto-campo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+}
+
+.pov-foto-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 14px rgba(6, 28, 98, .18);
+    background: var(--pov-ice);
+}
+
 /* Linha do tempo de atendimentos */
 .timeline > div > i.bg-warning {
     background: var(--pov-orange) !important;

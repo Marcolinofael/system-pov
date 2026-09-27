@@ -60,10 +60,15 @@
                     @forelse ($beneficiarios as $b)
                         <tr>
                             <td>
-                                <a href="{{ route('beneficiarios.show', $b) }}" class="font-weight-bold">{{ $b->nome_exibicao }}</a>
-                                @if ($b->nome_social)
-                                    <br><small class="text-muted">Registro: {{ $b->nome }}</small>
-                                @endif
+                                <div class="d-flex align-items-center">
+                                    @include('partials.avatar', ['b' => $b, 'tamanho' => 38, 'classe' => 'mr-2'])
+                                    <div>
+                                        <a href="{{ route('beneficiarios.show', $b) }}" class="font-weight-bold">{{ $b->nome_exibicao }}</a>
+                                        @if ($b->nome_social)
+                                            <br><small class="text-muted">Registro: {{ $b->nome }}</small>
+                                        @endif
+                                    </div>
+                                </div>
                             </td>
                             <td>
                                 {{ $b->cpf_formatado ?? '—' }}

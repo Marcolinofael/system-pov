@@ -31,6 +31,31 @@
         <h3 class="card-title"><span class="pov-section-icon"><i class="fas fa-id-card"></i></span>Identificação do responsável</h3>
     </div>
     <div class="card-body">
+      <div class="row">
+        {{-- Foto de cadastro --}}
+        <div class="col-lg-3 mb-3">
+            <div class="pov-foto-campo">
+                <img id="foto-preview" class="pov-foto-preview" alt="Foto de cadastro"
+                     src="{{ $b->foto_url ?? asset('img/sem-foto.svg') }}" data-vazia="{{ asset('img/sem-foto.svg') }}">
+
+                <input type="file" id="foto" name="foto" accept="image/*" class="d-none">
+                <input type="hidden" id="remover_foto" name="remover_foto" value="0">
+
+                <div class="btn-group btn-group-sm">
+                    <label for="foto" class="btn btn-primary mb-0"><i class="fas fa-camera"></i> {{ $b->foto ? 'Trocar foto' : 'Tirar / escolher foto' }}</label>
+                    <button type="button" id="remover-foto" class="btn btn-outline-danger {{ $b->foto ? '' : 'd-none' }}" title="Remover foto">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <small class="text-muted text-center">No celular, abre a câmera.</small>
+                @error('foto') <span class="text-danger small text-center">{{ $message }}</span> @enderror
+                @if ($errors->any() && ! $errors->has('foto'))
+                    <small class="text-warning text-center">Se tinha escolhido uma foto, selecione de novo.</small>
+                @endif
+            </div>
+        </div>
+
+        <div class="col-lg-9">
         <div class="form-row">
             @include('partials.campo', ['nome' => 'nome', 'rotulo' => 'Nome completo', 'valor' => $b->nome, 'col' => 'col-md-6', 'max' => 150, 'obrigatorio' => true])
             @include('partials.campo', ['nome' => 'nome_social', 'rotulo' => 'Nome social', 'valor' => $b->nome_social, 'col' => 'col-md-6', 'max' => 150, 'ajuda' => 'Como a pessoa prefere ser chamada, se diferente do registro.'])
@@ -47,6 +72,8 @@
             @include('partials.selecao', ['nome' => 'cor_raca', 'rotulo' => 'Cor / raça', 'opcoes' => B::CORES_RACAS, 'valor' => $b->cor_raca, 'col' => 'col-md-3'])
             @include('partials.selecao', ['nome' => 'escolaridade', 'rotulo' => 'Escolaridade', 'opcoes' => B::ESCOLARIDADES, 'valor' => $b->escolaridade, 'col' => 'col-md-3'])
         </div>
+        </div>
+      </div>
     </div>
 </div>
 
@@ -250,6 +277,41 @@
                     document.getElementById('uf').value = d.uf || '';
                     document.getElementById('numero').focus();
                 } catch (e) { /* sem conexão: preenchimento manual */ }
+            });
+
+            // Foto: reduz no navegador (máx. 800px, JPEG) antes de enviar — upload leve até no 3G
+            const campoFoto = document.getElementById('foto');
+            const preview = document.getElementById('foto-preview');
+            const remover = document.getElementById('remover-foto');
+            const flagRemover = document.getElementById('remover_foto');
+
+            campoFoto.addEventListener('change', async () => {
+                const original = campoFoto.files[0];
+                if (!original) return;
+                flagRemover.value = '0';
+                remover.classList.remove('d-none');
+                preview.src = URL.createObjectURL(original);
+
+                try {
+                    const bitmap = await createImageBitmap(original, { imageOrientation: 'from-image' });
+                    const escala = Math.min(1, 800 / Math.max(bitmap.width, bitmap.height));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.round(bitmap.width * escala);
+                    canvas.height = Math.round(bitmap.height * escala);
+                    canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+                    const blob = await new Promise(ok => canvas.toBlob(ok, 'image/jpeg', 0.85));
+                    if (!blob || blob.size >= original.size) return;
+                    const dt = new DataTransfer();
+                    dt.items.add(new File([blob], 'foto.jpg', { type: 'image/jpeg' }));
+                    campoFoto.files = dt.files;
+                } catch (e) { /* navegador sem suporte: envia o arquivo original */ }
+            });
+
+            remover.addEventListener('click', () => {
+                campoFoto.value = '';
+                flagRemover.value = '1';
+                preview.src = preview.dataset.vazia;
+                remover.classList.add('d-none');
             });
 
             // Composição familiar

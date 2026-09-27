@@ -36,6 +36,7 @@ class BeneficiarioRequest extends FormRequest
             'necessidades' => array_values($this->input('necessidades', [])),
             'possui_deficiencia' => $this->boolean('possui_deficiencia'),
             'consentimento_lgpd' => $this->boolean('consentimento_lgpd'),
+            'remover_foto' => $this->boolean('remover_foto'),
             'ativo' => $this->boolean('ativo'),
             'familiares' => $familiares,
         ]);
@@ -59,6 +60,8 @@ class BeneficiarioRequest extends FormRequest
         return [
             'nome' => ['required', 'string', 'max:150'],
             'nome_social' => ['nullable', 'string', 'max:150'],
+            'foto' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+            'remover_foto' => ['boolean'],
             'cpf' => ['nullable', new Cpf, Rule::unique('beneficiarios', 'cpf')->ignore($id)],
             'rg' => ['nullable', 'string', 'max:20'],
             'nis' => ['nullable', 'digits:11', Rule::unique('beneficiarios', 'nis')->ignore($id)],

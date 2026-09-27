@@ -31,10 +31,16 @@
         <div class="col-lg-4">
             <div class="card card-primary card-outline">
                 <div class="card-body box-profile text-center">
-                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
-                          style="width:84px;height:84px;background:var(--pov-ice);color:var(--pov-blue-dark);font-size:2rem;font-weight:600">
-                        {{ mb_strtoupper(mb_substr($b->nome_exibicao, 0, 1)) }}
-                    </span>
+                    <div class="mb-3">
+                        @if ($b->foto)
+                            <a href="{{ $b->foto_url }}" target="_blank" title="Ver foto ampliada">
+                                @include('partials.avatar', ['b' => $b, 'tamanho' => 130])
+                            </a>
+                        @else
+                            @include('partials.avatar', ['b' => $b, 'tamanho' => 110])
+                            <div><a href="{{ route('beneficiarios.edit', $b) }}" class="small"><i class="fas fa-camera"></i> Adicionar foto</a></div>
+                        @endif
+                    </div>
                     <h3 class="profile-username mb-0">{{ $b->nome_exibicao }}</h3>
                     @if ($b->nome_social)
                         <p class="text-muted small mb-1">Nome de registro: {{ $b->nome }}</p>

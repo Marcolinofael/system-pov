@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', DashboardController::class)->name('dashboard');
 
+    Route::get('beneficiarios/{beneficiario}/foto', [BeneficiarioController::class, 'foto'])->name('beneficiarios.foto');
     Route::resource('beneficiarios', BeneficiarioController::class)->parameters(['beneficiarios' => 'beneficiario']);
 
     Route::resource('atendimentos', AtendimentoController::class)->except('show');

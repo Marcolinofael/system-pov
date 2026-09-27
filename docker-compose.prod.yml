@@ -26,6 +26,9 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    volumes:
+      # Arquivos enviados (fotos dos beneficiários) sobrevivem aos deploys
+      - pov-storage:/var/www/html/storage/app
     depends_on:
       pov-db:
         condition: service_healthy
@@ -48,4 +51,6 @@ services:
       retries: 30
 
 volumes:
+  # Dados permanentes: NÃO usar "Fresh Volumes" no Dokploy (apaga estes volumes)
   pov-dbdata:
+  pov-storage:

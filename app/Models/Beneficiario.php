@@ -151,6 +151,14 @@ class Beneficiario extends Model
         });
     }
 
+    /** URL protegida da foto; o "v" muda a cada alteração para não mostrar foto antiga em cache. */
+    public function getFotoUrlAttribute(): ?string
+    {
+        return $this->foto
+            ? route('beneficiarios.foto', ['beneficiario' => $this, 'v' => $this->updated_at?->timestamp])
+            : null;
+    }
+
     public function getNomeExibicaoAttribute(): string
     {
         return $this->nome_social ?: $this->nome;
