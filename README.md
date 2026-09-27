@@ -83,6 +83,26 @@ O MySQL fica exposto em `localhost:3307` para ferramentas como DBeaver/HeidiSQL.
 > Depois do primeiro acesso, troque a senha do admin pela tela de Usuários.
 > A variável `ADMIN_PASSWORD` só é usada para criar o usuário inicial.
 
+## Backup (Google Drive)
+
+O serviço `pov-backup` faz, todo dia às 03:00 (e ao subir), o dump do banco e um `.tar.gz` das fotos,
+e envia para a pasta `backups-system-pov` no Google Drive, mantendo 30 dias. Acompanhe em
+**Dokploy → System → Logs → pov-backup**.
+
+Configuração (uma vez):
+
+1. Instale o rclone no seu computador: `winget install Rclone.Rclone`
+2. Gere o token (abre o navegador para você autorizar a conta Google):
+   `rclone authorize "drive" "eyJzY29wZSI6ImRyaXZlLmZpbGUifQ=="`
+   (escopo `drive.file`: o sistema só enxerga os arquivos que ele mesmo cria no Drive)
+3. Copie o JSON entre `--->` e `<---` e adicione no Environment do Dokploy, entre aspas simples:
+   `GDRIVE_TOKEN='{"access_token":"...","refresh_token":"...",...}'`
+4. Deploy. Opcionais: `BACKUP_HORA`, `BACKUP_DIAS`, `GDRIVE_PASTA`.
+
+Restaurar: baixe a pasta do dia no Drive e
+`gunzip < banco-AAAA-MM-DD_HHMM.sql.gz | mysql -h <host> -u root -p` (recria o banco `system_pov`);
+as fotos voltam com `tar -xzf arquivos-....tar.gz -C <pasta que contém storage>`.
+
 ## Estrutura principal
 
 | Caminho | Conteúdo |

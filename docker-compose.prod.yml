@@ -50,6 +50,29 @@ services:
       timeout: 5s
       retries: 30
 
+  # Backup diário do banco + fotos para o Google Drive (ver docker/backup/backup.sh)
+  pov-backup:
+    build: ./docker/backup
+    restart: unless-stopped
+    environment:
+      TZ: America/Sao_Paulo
+      DB_HOST: pov-db
+      DB_DATABASE: ${DB_DATABASE:-system_pov}
+      DB_USERNAME: ${DB_USERNAME:-pov}
+      DB_PASSWORD: ${DB_PASSWORD}
+      GDRIVE_PASTA: ${GDRIVE_PASTA:-backups-system-pov}
+      BACKUP_HORA: ${BACKUP_HORA:-03:00}
+      BACKUP_DIAS: ${BACKUP_DIAS:-30}
+      BACKUP_AO_INICIAR: ${BACKUP_AO_INICIAR:-1}
+      RCLONE_CONFIG_GDRIVE_TYPE: drive
+      RCLONE_CONFIG_GDRIVE_SCOPE: drive.file
+      RCLONE_CONFIG_GDRIVE_TOKEN: ${GDRIVE_TOKEN:-}
+    volumes:
+      - pov-storage:/dados/storage:ro
+    depends_on:
+      pov-db:
+        condition: service_healthy
+
 volumes:
   # Dados permanentes: NÃO usar "Fresh Volumes" no Dokploy (apaga estes volumes)
   pov-dbdata:
