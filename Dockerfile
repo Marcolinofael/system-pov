@@ -4,13 +4,13 @@ FROM composer:2 AS vendor
 WORKDIR /app
 
 COPY composer.json composer.lock* ./
-RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction --ignore-platform-reqs
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction --ignore-platform-req=ext-*
 
 COPY . .
 RUN composer dump-autoload --optimize --no-dev --no-scripts
 
 # ---------- Imagem final (nginx + php-fpm) ----------
-FROM php:8.3-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 RUN apk add --no-cache nginx supervisor icu-libs libzip \
     && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS icu-dev libzip-dev \

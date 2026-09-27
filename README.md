@@ -1,6 +1,6 @@
 # system-pov
 
-Sistema Projeto Oberland JR Vive — Laravel 12 + AdminLTE 3 (PHP 8.3, MySQL 8).
+Sistema Projeto Oberland JR Vive — Laravel 12 + AdminLTE 3 (PHP 8.4, MySQL 8).
 
 ## Módulos
 
@@ -58,7 +58,7 @@ O MySQL fica exposto em `localhost:3307` para ferramentas como DBeaver/HeidiSQL.
    Para gerar a `APP_KEY` sem PHP instalado:
 
    ```bash
-   docker run --rm php:8.3-cli php -r "echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;"
+   docker run --rm php:8.4-cli php -r "echo 'base64:'.base64_encode(random_bytes(32)).PHP_EOL;"
    ```
 
 4. **DNS**: no painel do domínio `projetoberlandjrvive.online`, crie um registro **A** com nome `system`
