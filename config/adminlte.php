@@ -5,15 +5,30 @@
 
 return [
 
-    'title' => 'Oberland JR Vive',
+    'title' => 'Oberland Jr. Vive',
     'title_prefix' => '',
-    'title_postfix' => ' | Oberland JR Vive',
+    'title_postfix' => ' | Oberland Jr. Vive',
 
-    'logo' => '<b>Oberland</b> JR Vive',
-    'logo_img_alt' => 'Oberland JR Vive',
+    'google_fonts' => [
+        'allowed' => false,
+    ],
+
+    'logo' => '<b>Oberland</b> Jr. Vive',
+    'logo_img' => 'img/povrosto.png',
+    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo_img_xl' => null,
+    'logo_img_xl_class' => 'brand-image-xs',
+    'logo_img_alt' => 'Projeto Oberland Jr. Vive',
 
     'auth_logo' => [
-        'enabled' => false,
+        'enabled' => true,
+        'img' => [
+            'path' => 'img/povlogo.png',
+            'alt' => 'Projeto Oberland Jr. Vive',
+            'class' => '',
+            'width' => 240,
+            'height' => 198,
+        ],
     ],
 
     'preloader' => [
@@ -27,7 +42,10 @@ return [
     'layout_fixed_sidebar' => true,
     'layout_fixed_navbar' => true,
 
+    'classes_auth_card' => 'card-outline card-primary',
+    'classes_auth_btn' => 'btn-flat btn-primary',
     'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_topnav' => 'navbar-white navbar-light',
 
     'use_route_url' => false,
     'dashboard_url' => '/',
@@ -40,17 +58,22 @@ return [
 
     'menu' => [
         [
-            'text' => 'Dashboard',
+            'text' => 'Painel',
             'route' => 'dashboard',
-            'icon' => 'fas fa-fw fa-tachometer-alt',
+            'icon' => 'fas fa-fw fa-home',
         ],
 
-        ['header' => 'CADASTROS'],
+        ['header' => 'ATENDIMENTO'],
         [
-            'text' => 'Pessoas',
-            'route' => 'pessoas.index',
-            'icon' => 'fas fa-fw fa-users',
-            'active' => ['pessoas', 'pessoas/*'],
+            'text' => 'Beneficiários',
+            'route' => 'beneficiarios.index',
+            'icon' => 'fas fa-fw fa-hands-helping',
+            'active' => ['beneficiarios', 'regex:@^beneficiarios/(?!create)@'],
+        ],
+        [
+            'text' => 'Novo cadastro',
+            'route' => 'beneficiarios.create',
+            'icon' => 'fas fa-fw fa-user-plus',
         ],
 
         [
@@ -63,6 +86,20 @@ return [
             'icon' => 'fas fa-fw fa-user-shield',
             'active' => ['users', 'users/*'],
             'can' => 'admin',
+        ],
+    ],
+
+    // Tema do projeto, carregado em todas as páginas (inclusive login)
+    'plugins' => [
+        'TemaPov' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'css/pov.css',
+                ],
+            ],
         ],
     ],
 

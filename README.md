@@ -6,8 +6,12 @@ Sistema Projeto Oberland JR Vive — Laravel 12 + AdminLTE 3 (PHP 8.4, MySQL 8).
 
 - **Login** com bloqueio de usuários inativos e limite de tentativas
 - **Usuários** (somente administradores): perfis *Administrador* e *Operador*
-- **Pessoas**: cadastro completo com validação de CPF, busca, filtros e preenchimento de endereço pelo CEP (ViaCEP)
-- **Dashboard** com indicadores
+- **Beneficiários**: cadastro das famílias atendidas pelo projeto — identificação (CPF, NIS, nome social),
+  contato e endereço (CEP via ViaCEP), composição familiar, situação socioeconômica (moradia, trabalho,
+  renda e benefícios), saúde, necessidades e autorização LGPD. Busca por nome/CPF/NIS/bairro e filtro por necessidade.
+- **Painel** com famílias ativas, pessoas alcançadas e o que as famílias mais precisam
+
+Identidade visual (cores, logos e fonte Geist) igual à landing page do projeto: `public/css/pov.css` e `public/img/`.
 
 ## Rodando localmente (Docker)
 

@@ -12,7 +12,7 @@ class LoginController extends Controller
 {
     public function showLoginForm(): View
     {
-        return view('adminlte::auth.login');
+        return view('auth.login');
     }
 
     public function login(Request $request): RedirectResponse

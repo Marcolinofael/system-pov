@@ -2,7 +2,9 @@
 
 return [
 
+    'array' => 'O campo :attribute é inválido.',
     'before' => 'O campo :attribute deve ser uma data anterior a :date.',
+    'before_or_equal' => 'O campo :attribute não pode ser uma data futura.',
     'boolean' => 'O campo :attribute deve ser verdadeiro ou falso.',
     'confirmed' => 'A confirmação de :attribute não confere.',
     'date' => 'O campo :attribute deve ser uma data válida.',
@@ -17,6 +19,7 @@ return [
         'numeric' => 'O campo :attribute deve ser no mínimo :min.',
         'string' => 'O campo :attribute deve ter no mínimo :min caracteres.',
     ],
+    'numeric' => 'O campo :attribute deve ser um valor numérico.',
     'password' => [
         'letters' => 'O campo :attribute deve conter ao menos uma letra.',
         'mixed' => 'O campo :attribute deve conter letras maiúsculas e minúsculas.',
@@ -42,6 +45,18 @@ return [
         'endereco' => 'logradouro',
         'numero' => 'número',
         'observacoes' => 'observações',
+        'nome_social' => 'nome social',
+        'nis' => 'NIS',
+        'rg' => 'RG',
+        'telefone_recado' => 'telefone para recado',
+        'ponto_referencia' => 'ponto de referência',
+        'situacao_moradia' => 'moradia',
+        'situacao_trabalho' => 'trabalho',
+        'renda_familiar' => 'renda familiar',
+        'estado_civil' => 'estado civil',
+        'cor_raca' => 'cor / raça',
+        'data_cadastro' => 'data do cadastro',
+        'saude' => 'saúde',
     ],
 
 ];

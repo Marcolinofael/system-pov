@@ -1,0 +1,180 @@
+@extends('layouts.app')
+
+@use('App\Models\Beneficiario', 'B')
+
+@section('title', $beneficiario->nome_exibicao)
+
+@section('content_header')
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <h1 class="mb-2">{{ $beneficiario->nome_exibicao }}</h1>
+        <div class="mb-2">
+            <a href="{{ route('beneficiarios.edit', $beneficiario) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Editar</a>
+            <a href="{{ route('beneficiarios.index') }}" class="btn btn-default">Voltar</a>
+        </div>
+    </div>
+@stop
+
+@section('content')
+    @include('partials.alerts')
+
+    @php($b = $beneficiario)
+
+    @unless ($b->consentimento_lgpd)
+        <div class="alert alert-warning">
+            <i class="fas fa-file-signature"></i>
+            O termo de autorização de uso de dados (LGPD) ainda <strong>não foi assinado</strong> por este responsável.
+        </div>
+    @endunless
+
+    <div class="row">
+        {{-- Resumo --}}
+        <div class="col-lg-4">
+            <div class="card card-primary card-outline">
+                <div class="card-body box-profile text-center">
+                    <span class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                          style="width:84px;height:84px;background:var(--pov-ice);color:var(--pov-blue-dark);font-size:2rem;font-weight:600">
+                        {{ mb_strtoupper(mb_substr($b->nome_exibicao, 0, 1)) }}
+                    </span>
+                    <h3 class="profile-username mb-0">{{ $b->nome_exibicao }}</h3>
+                    @if ($b->nome_social)
+                        <p class="text-muted small mb-1">Nome de registro: {{ $b->nome }}</p>
+                    @endif
+                    <span class="badge badge-{{ $b->ativo ? 'success' : 'secondary' }}">{{ $b->ativo ? 'Em acompanhamento' : 'Inativo' }}</span>
+
+                    <ul class="list-group list-group-unbordered mt-3 text-left">
+                        <li class="list-group-item"><b>Pessoas na casa</b> <span class="float-right">{{ $b->total_moradores }}</span></li>
+                        <li class="list-group-item"><b>Renda familiar</b> <span class="float-right">{{ B::moeda($b->renda_familiar) }}</span></li>
+                        <li class="list-group-item"><b>Renda per capita</b> <span class="float-right">{{ B::moeda($b->renda_per_capita) }}</span></li>
+                        <li class="list-group-item"><b>Cadastrado em</b>
+                            <span class="float-right">{{ ($b->data_cadastro ?? $b->created_at)->format('d/m/Y') }}</span>
+                        </li>
+                        @if ($b->cadastradoPor)
+                            <li class="list-group-item"><b>Por</b> <span class="float-right">{{ $b->cadastradoPor->name }}</span></li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card card-secondary card-outline">
+                <div class="card-header"><h3 class="card-title"><i class="fas fa-hand-holding-heart mr-1"></i> Necessidades</h3></div>
+                <div class="card-body">
+                    @forelse ($b->rotulos('necessidades') as $n)
+                        <span class="pov-tag orange">{{ $n }}</span>
+                    @empty
+                        <span class="text-muted">Nenhuma informada.</span>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            {{-- Identificação --}}
+            <div class="card">
+                <div class="card-header"><h3 class="card-title"><i class="fas fa-id-card mr-1"></i> Identificação</h3></div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">CPF</dt><dd class="col-sm-8">{{ $b->cpf_formatado ?? '—' }}</dd>
+                        <dt class="col-sm-4">RG</dt><dd class="col-sm-8">{{ $b->rg ?? '—' }}</dd>
+                        <dt class="col-sm-4">NIS / PIS</dt><dd class="col-sm-8">{{ $b->nis ?? '—' }}</dd>
+                        <dt class="col-sm-4">Nascimento</dt>
+                        <dd class="col-sm-8">{{ $b->data_nascimento ? $b->data_nascimento->format('d/m/Y').' ('.$b->idade.' anos)' : '—' }}</dd>
+                        <dt class="col-sm-4">Sexo</dt><dd class="col-sm-8">{{ $b->rotulo('sexo') ?? '—' }}</dd>
+                        <dt class="col-sm-4">Estado civil</dt><dd class="col-sm-8">{{ $b->rotulo('estado_civil') ?? '—' }}</dd>
+                        <dt class="col-sm-4">Cor / raça</dt><dd class="col-sm-8">{{ $b->rotulo('cor_raca') ?? '—' }}</dd>
+                        <dt class="col-sm-4">Escolaridade</dt><dd class="col-sm-8">{{ $b->rotulo('escolaridade') ?? '—' }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            {{-- Contato --}}
+            <div class="card">
+                <div class="card-header"><h3 class="card-title"><i class="fas fa-map-marker-alt mr-1"></i> Contato e endereço</h3></div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Telefone</dt>
+                        <dd class="col-sm-8">
+                            @if ($b->telefone)
+                                {{ $b->telefone }}
+                                <a href="https://wa.me/55{{ preg_replace('/\D/', '', $b->telefone) }}" target="_blank" rel="noopener"
+                                   class="ml-1 text-success" title="Abrir no WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                            @else
+                                —
+                            @endif
+                        </dd>
+                        <dt class="col-sm-4">Recado</dt><dd class="col-sm-8">{{ $b->telefone_recado ?? '—' }}</dd>
+                        <dt class="col-sm-4">E-mail</dt><dd class="col-sm-8">{{ $b->email ?? '—' }}</dd>
+                        <dt class="col-sm-4">Endereço</dt>
+                        <dd class="col-sm-8">
+                            @if ($b->endereco || $b->bairro)
+                                {{ collect([$b->endereco, $b->numero, $b->complemento])->filter()->join(', ') }}<br>
+                                {{ collect([$b->bairro, $b->cidade])->filter()->join(' — ') }}{{ $b->uf ? '/'.$b->uf : '' }}
+                                @if ($b->cep) &middot; CEP {{ $b->cep_formatado }} @endif
+                            @else
+                                —
+                            @endif
+                        </dd>
+                        <dt class="col-sm-4">Referência</dt><dd class="col-sm-8">{{ $b->ponto_referencia ?? '—' }}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            {{-- Família --}}
+            <div class="card card-info card-outline">
+                <div class="card-header"><h3 class="card-title"><i class="fas fa-users mr-1"></i> Composição familiar ({{ $b->total_moradores }} {{ $b->total_moradores > 1 ? 'pessoas' : 'pessoa' }})</h3></div>
+                <div class="card-body p-0 table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                            <tr><th>Nome</th><th>Parentesco</th><th>Idade</th><th>Renda</th><th>Observação</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-light">
+                                <td><strong>{{ $b->nome_exibicao }}</strong></td>
+                                <td>Responsável</td>
+                                <td>{{ $b->idade !== null ? $b->idade.' anos' : '—' }}</td>
+                                <td>—</td>
+                                <td></td>
+                            </tr>
+                            @foreach ($b->familiares as $f)
+                                <tr>
+                                    <td>{{ $f->nome }}</td>
+                                    <td>{{ $f->parentesco_label }}</td>
+                                    <td>{{ $f->data_nascimento ? $f->data_nascimento->age.' anos' : '—' }}</td>
+                                    <td>{{ $f->renda !== null ? B::moeda($f->renda) : '—' }}</td>
+                                    <td>{{ $f->observacao }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {{-- Socioeconômico --}}
+            <div class="card card-secondary card-outline">
+                <div class="card-header"><h3 class="card-title"><i class="fas fa-home mr-1"></i> Situação socioeconômica</h3></div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Moradia</dt><dd class="col-sm-8">{{ $b->rotulo('situacao_moradia') ?? '—' }}</dd>
+                        <dt class="col-sm-4">Trabalho</dt><dd class="col-sm-8">{{ $b->rotulo('situacao_trabalho') ?? '—' }}</dd>
+                        <dt class="col-sm-4">Benefícios</dt>
+                        <dd class="col-sm-8">
+                            @forelse ($b->rotulos('beneficios') as $beneficio)
+                                <span class="pov-tag">{{ $beneficio }}</span>
+                            @empty
+                                Nenhum
+                            @endforelse
+                        </dd>
+                        <dt class="col-sm-4">Pessoa com deficiência</dt><dd class="col-sm-8">{{ $b->possui_deficiencia ? 'Sim' : 'Não' }}</dd>
+                        <dt class="col-sm-4">Saúde</dt><dd class="col-sm-8">{!! $b->saude ? nl2br(e($b->saude)) : '—' !!}</dd>
+                    </dl>
+                </div>
+            </div>
+
+            @if ($b->observacoes)
+                <div class="card">
+                    <div class="card-header"><h3 class="card-title"><i class="fas fa-sticky-note mr-1"></i> Observações do atendimento</h3></div>
+                    <div class="card-body">{!! nl2br(e($b->observacoes)) !!}</div>
+                </div>
+            @endif
+        </div>
+    </div>
+@stop

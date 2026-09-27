@@ -1,0 +1,333 @@
+/*
+ * Identidade visual do Projeto Oberland Jr. Vive (mesma paleta da landing page LP-POV)
+ * sobre o AdminLTE 3 / Bootstrap 4.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+
+:root {
+    --pov-navy: #061c62;
+    --pov-navy-2: #17407e;
+    --pov-blue: #0a9fd9;
+    --pov-blue-dark: #087eb5;
+    --pov-sky: #47bcef;
+    --pov-sky-light: #bdeeff;
+    --pov-ice: #eaf8ff;
+    --pov-orange: #f58549;
+    --pov-orange-dark: #e06d2f;
+}
+
+body,
+.tooltip,
+.popover {
+    font-family: 'Geist', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    color: #1f2a44;
+}
+
+.content-wrapper {
+    background: #f4f8fc;
+}
+
+a {
+    color: var(--pov-blue-dark);
+}
+
+a:hover {
+    color: var(--pov-navy);
+}
+
+h1, h2, h3, .card-title {
+    color: var(--pov-navy);
+}
+
+/* ---------- Barra lateral ---------- */
+.main-sidebar,
+.main-sidebar .brand-link {
+    background: var(--pov-navy) !important;
+}
+
+.main-sidebar .brand-link {
+    border-bottom: 1px solid rgba(255, 255, 255, .08) !important;
+}
+
+.main-sidebar .brand-link .brand-image {
+    background: #fff;
+    padding: 2px;
+    opacity: 1;
+    max-height: 36px;
+}
+
+.brand-text b {
+    color: var(--pov-sky);
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:focus.active {
+    background: linear-gradient(90deg, var(--pov-blue), var(--pov-sky));
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(10, 159, 217, .35);
+}
+
+.sidebar-dark-primary .nav-sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, .08);
+}
+
+.nav-sidebar .nav-header {
+    color: var(--pov-sky) !important;
+    font-size: .72rem;
+    letter-spacing: .12em;
+    opacity: .85;
+}
+
+/* ---------- Barra superior ---------- */
+.main-header.navbar {
+    border-bottom: 3px solid var(--pov-orange) !important;
+}
+
+.user-header.bg-primary {
+    background: linear-gradient(135deg, var(--pov-navy), var(--pov-blue)) !important;
+}
+
+/* ---------- Botões e componentes ---------- */
+.btn-primary,
+.bg-primary,
+.badge-primary {
+    background-color: var(--pov-blue) !important;
+    border-color: var(--pov-blue) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--pov-blue-dark) !important;
+    border-color: var(--pov-blue-dark) !important;
+}
+
+.btn-info,
+.badge-info {
+    background-color: var(--pov-navy-2) !important;
+    border-color: var(--pov-navy-2) !important;
+    color: #fff !important;
+}
+
+.btn-warning,
+.badge-warning {
+    background-color: var(--pov-orange) !important;
+    border-color: var(--pov-orange) !important;
+    color: #fff !important;
+}
+
+.btn-pov-orange {
+    background: var(--pov-orange);
+    border-color: var(--pov-orange);
+    color: #fff;
+}
+
+.btn-pov-orange:hover {
+    background: var(--pov-orange-dark);
+    border-color: var(--pov-orange-dark);
+    color: #fff;
+}
+
+.card {
+    border-radius: .75rem;
+    box-shadow: 0 1px 3px rgba(6, 28, 98, .06), 0 6px 18px rgba(6, 28, 98, .05);
+}
+
+.card-primary.card-outline {
+    border-top: 3px solid var(--pov-blue);
+}
+
+.card-secondary.card-outline {
+    border-top: 3px solid var(--pov-orange);
+}
+
+.card-info.card-outline {
+    border-top: 3px solid var(--pov-navy-2);
+}
+
+.form-control:focus,
+.custom-select:focus {
+    border-color: var(--pov-sky);
+    box-shadow: 0 0 0 .2rem rgba(71, 188, 239, .25);
+}
+
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--pov-blue);
+    border-color: var(--pov-blue);
+}
+
+.page-item.active .page-link {
+    background-color: var(--pov-blue);
+    border-color: var(--pov-blue);
+}
+
+.page-link {
+    color: var(--pov-blue-dark);
+}
+
+.table thead th {
+    border-bottom-width: 1px;
+    color: var(--pov-navy-2);
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+/* Caixas do dashboard */
+.small-box {
+    border-radius: .75rem;
+    overflow: hidden;
+}
+
+.small-box.bg-pov-blue { background: linear-gradient(135deg, var(--pov-blue), var(--pov-sky)) !important; color: #fff; }
+.small-box.bg-pov-navy { background: linear-gradient(135deg, var(--pov-navy), var(--pov-navy-2)) !important; color: #fff; }
+.small-box.bg-pov-orange { background: linear-gradient(135deg, var(--pov-orange), #f7a26f) !important; color: #fff; }
+.small-box.bg-pov-sky { background: linear-gradient(135deg, var(--pov-sky), var(--pov-sky-light)) !important; color: var(--pov-navy); }
+.small-box.bg-pov-sky .small-box-footer { color: var(--pov-navy); }
+
+/* Faixa de boas-vindas */
+.pov-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: .75rem;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 1.25rem;
+    color: var(--pov-navy);
+    background:
+        radial-gradient(circle at 85% 50%, rgba(255, 255, 255, .9) 0 18%, transparent 45%),
+        linear-gradient(135deg, var(--pov-sky), var(--pov-sky-light) 55%, var(--pov-sky));
+}
+
+.pov-hero h2 {
+    font-weight: 600;
+    margin: 0 0 .25rem;
+}
+
+.pov-hero p {
+    margin: 0;
+    color: var(--pov-navy-2);
+}
+
+.pov-hero img {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 110px;
+    filter: drop-shadow(0 10px 18px rgba(6, 28, 98, .2));
+}
+
+@media (max-width: 767.98px) {
+    .pov-hero img { display: none; }
+}
+
+/* Barras de necessidades */
+.pov-bar {
+    height: 8px;
+    border-radius: 99px;
+    background: var(--pov-ice);
+}
+
+.pov-bar > span {
+    display: block;
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--pov-blue), var(--pov-sky));
+}
+
+/* Etiquetas de necessidades / benefícios */
+.pov-tag {
+    display: inline-block;
+    padding: .15rem .55rem;
+    margin: 0 .25rem .25rem 0;
+    border-radius: 99px;
+    font-size: .78rem;
+    background: var(--pov-ice);
+    color: var(--pov-navy-2);
+}
+
+.pov-tag.orange {
+    background: #fde8dc;
+    color: #9a3f10;
+}
+
+/* Seções do formulário */
+.pov-section-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    margin-right: .5rem;
+    border-radius: 50%;
+    background: var(--pov-ice);
+    color: var(--pov-blue-dark);
+    font-size: .9rem;
+}
+
+.pov-checks .custom-control {
+    margin-bottom: .35rem;
+}
+
+/* ---------- Tela de login ---------- */
+.login-page {
+    background:
+        radial-gradient(circle at 50% 45%, #fff 0 22%, rgba(255, 255, 255, .68) 45%, transparent 72%),
+        linear-gradient(135deg, var(--pov-sky), var(--pov-sky-light) 48%, #48bdf0);
+}
+
+.login-page::before,
+.login-page::after {
+    content: '';
+    position: fixed;
+    width: 26rem;
+    height: 26rem;
+    border-radius: 50%;
+    filter: blur(70px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.login-page::before {
+    left: -8rem;
+    top: 15%;
+    background: rgba(10, 159, 217, .28);
+}
+
+.login-page::after {
+    right: -8rem;
+    bottom: 5%;
+    background: rgba(245, 133, 73, .28);
+}
+
+.login-page .login-box {
+    position: relative;
+    z-index: 1;
+}
+
+.login-page .login-logo img {
+    max-width: 240px;
+    height: auto;
+    filter: drop-shadow(0 16px 24px rgba(6, 28, 98, .18));
+}
+
+.login-page .card {
+    border: 0;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, .85);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 20px 40px rgba(6, 28, 98, .12);
+}
+
+.login-page .card-header {
+    background: transparent;
+    border-bottom: 0;
+}
+
+.login-page .login-card-body,
+.login-page .card-body {
+    background: transparent;
+}

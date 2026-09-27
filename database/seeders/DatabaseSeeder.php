@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Pessoa;
+use App\Models\Beneficiario;
+use App\Models\Familiar;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -29,8 +30,16 @@ class DatabaseSeeder extends Seeder
         );
 
         // Dados de exemplo apenas em ambiente local
-        if (app()->environment('local') && Pessoa::doesntExist()) {
-            Pessoa::factory(30)->create();
+        if (app()->environment('local') && Beneficiario::doesntExist()) {
+            Beneficiario::factory(30)->create()->each(function (Beneficiario $b) {
+                foreach (range(1, fake()->numberBetween(0, 4)) as $i) {
+                    $b->familiares()->create([
+                        'nome' => fake()->name(),
+                        'parentesco' => fake()->randomElement(array_keys(Familiar::PARENTESCOS)),
+                        'data_nascimento' => fake()->dateTimeBetween('-60 years'),
+                    ]);
+                }
+            });
         }
     }
 }
