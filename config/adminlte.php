@@ -68,12 +68,7 @@ return [
             'text' => 'Beneficiários',
             'route' => 'beneficiarios.index',
             'icon' => 'fas fa-fw fa-hands-helping',
-            'active' => ['beneficiarios', 'regex:@^beneficiarios/(?!create)@'],
-        ],
-        [
-            'text' => 'Novo cadastro',
-            'route' => 'beneficiarios.create',
-            'icon' => 'fas fa-fw fa-user-plus',
+            'active' => ['beneficiarios', 'beneficiarios/*'],
         ],
         [
             'text' => 'Atendimentos',
