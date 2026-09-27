@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BeneficiarioRequest;
+use App\Models\Atendimento;
+use App\Models\AtendimentoFoto;
 use App\Models\Beneficiario;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -54,7 +56,7 @@ class BeneficiarioController extends Controller
 
     public function show(Beneficiario $beneficiario): View
     {
-        $beneficiario->load('familiares', 'cadastradoPor', 'atendimentos.responsavel');
+        $beneficiario->load('familiares', 'cadastradoPor', 'atendimentos.responsavel', 'atendimentos.fotos');
 
         return view('beneficiarios.show', compact('beneficiario'));
     }
@@ -84,12 +86,15 @@ class BeneficiarioController extends Controller
 
     public function destroy(Beneficiario $beneficiario): RedirectResponse
     {
-        $foto = $beneficiario->foto;
-        $beneficiario->delete();
+        // Arquivos não são apagados pelo cascade do banco: junta tudo antes de excluir
+        $arquivos = AtendimentoFoto::whereIn('atendimento_id', Atendimento::where('beneficiario_id', $beneficiario->id)->select('id'))
+            ->pluck('caminho')
+            ->push($beneficiario->foto)
+            ->filter()
+            ->all();
 
-        if ($foto) {
-            Storage::disk('local')->delete($foto);
-        }
+        $beneficiario->delete();
+        Storage::disk('local')->delete($arquivos);
 
         return redirect()->route('beneficiarios.index')
             ->with('success', 'Cadastro excluído com sucesso.');

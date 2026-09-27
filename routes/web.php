@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::get('beneficiarios/{beneficiario}/foto', [BeneficiarioController::class, 'foto'])->name('beneficiarios.foto');
     Route::resource('beneficiarios', BeneficiarioController::class)->parameters(['beneficiarios' => 'beneficiario']);
 
+    Route::get('atendimentos/fotos/{foto}', [AtendimentoController::class, 'foto'])->name('atendimentos.foto');
     Route::resource('atendimentos', AtendimentoController::class)->except('show');
 
     Route::resource('users', UserController::class)->except('show')->middleware('can:admin');

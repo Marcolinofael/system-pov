@@ -85,8 +85,9 @@
                     </div>
                 </div>
 
-                <div class="collapse {{ $errors->hasAny(['data', 'tipo', 'quantidade', 'descricao']) ? 'show' : '' }}" id="novo-atendimento">
-                    <form method="POST" action="{{ route('atendimentos.store') }}" class="card-body border-bottom" style="background: var(--pov-ice)">
+                <div class="collapse {{ $errors->hasAny(['data', 'tipo', 'quantidade', 'descricao', 'fotos', 'fotos.*']) ? 'show' : '' }}" id="novo-atendimento">
+                    <form method="POST" action="{{ route('atendimentos.store') }}" enctype="multipart/form-data"
+                          class="card-body border-bottom" style="background: var(--pov-ice)">
                         @csrf
                         <input type="hidden" name="beneficiario_id" value="{{ $b->id }}">
                         <input type="hidden" name="origem" value="beneficiario">
@@ -109,6 +110,7 @@
                                       placeholder="O que foi entregue ou combinado (opcional)">{{ old('descricao') }}</textarea>
                             @error('descricao') <span class="invalid-feedback">{{ $message }}</span> @enderror
                         </div>
+                        @include('atendimentos._fotos_campo', ['id' => 'fotos-rapido'])
                         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar atendimento</button>
                     </form>
                 </div>
@@ -142,8 +144,17 @@
                                                 <strong>{{ $a->tipo_label }}</strong>{{ $a->quantidade ? ' · '.$a->quantidade.' '.($a->quantidade > 1 ? 'unidades' : 'unidade') : '' }}
                                                 <small class="text-muted d-block">por {{ $a->responsavel?->name ?? 'usuário removido' }}</small>
                                             </h3>
-                                            @if ($a->descricao)
-                                                <div class="timeline-body">{!! nl2br(e($a->descricao)) !!}</div>
+                                            @if ($a->descricao || $a->fotos->isNotEmpty())
+                                                <div class="timeline-body">
+                                                    @if ($a->descricao)
+                                                        <div class="mb-2">{!! nl2br(e($a->descricao)) !!}</div>
+                                                    @endif
+                                                    @foreach ($a->fotos as $foto)
+                                                        <a href="{{ $foto->url }}" target="_blank" title="Ver foto ampliada">
+                                                            <img src="{{ $foto->url }}" class="pov-thumb" alt="Foto do atendimento" loading="lazy">
+                                                        </a>
+                                                    @endforeach
+                                                </div>
                                             @endif
                                         </div>
                                     </div>

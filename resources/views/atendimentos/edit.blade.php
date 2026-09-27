@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-    <form method="POST" action="{{ route('atendimentos.update', $atendimento) }}">
+    <form method="POST" action="{{ route('atendimentos.update', $atendimento) }}" enctype="multipart/form-data">
         @method('PUT')
         @include('atendimentos._form')
     </form>

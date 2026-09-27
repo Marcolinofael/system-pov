@@ -100,6 +100,11 @@ return [
                     'asset' => true,
                     'location' => 'css/pov.css',
                 ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'js/pov.js',
+                ],
             ],
         ],
     ],

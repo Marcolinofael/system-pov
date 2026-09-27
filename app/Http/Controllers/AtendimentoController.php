@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AtendimentoRequest;
 use App\Models\Atendimento;
+use App\Models\AtendimentoFoto;
 use App\Models\Beneficiario;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AtendimentoController extends Controller
 {
@@ -29,7 +33,7 @@ class AtendimentoController extends Controller
             ->orderByDesc('total')
             ->get();
 
-        $atendimentos = $filtro->with('beneficiario', 'responsavel')
+        $atendimentos = $filtro->with('beneficiario', 'responsavel', 'fotos')
             ->orderByDesc('data')
             ->orderByDesc('id')
             ->paginate(20)
@@ -51,9 +55,10 @@ class AtendimentoController extends Controller
 
     public function store(AtendimentoRequest $request): RedirectResponse
     {
-        $atendimento = new Atendimento($request->validated());
+        $atendimento = new Atendimento($this->dados($request));
         $atendimento->user_id = $request->user()->id;
         $atendimento->save();
+        $this->adicionarFotos($request, $atendimento);
 
         return $this->voltar($request, $atendimento)->with('success', 'Atendimento registrado.');
     }
@@ -72,7 +77,15 @@ class AtendimentoController extends Controller
     {
         abort_unless($atendimento->podeSerAlteradoPor($request->user()), 403);
 
-        $atendimento->update($request->validated());
+        $atendimento->update($this->dados($request));
+
+        $remover = $atendimento->fotos()->whereIn('id', $request->validated('remover_fotos', []))->get();
+        foreach ($remover as $foto) {
+            Storage::disk('local')->delete($foto->caminho);
+            $foto->delete();
+        }
+
+        $this->adicionarFotos($request, $atendimento);
 
         return $this->voltar($request, $atendimento)->with('success', 'Atendimento atualizado.');
     }
@@ -81,9 +94,35 @@ class AtendimentoController extends Controller
     {
         abort_unless($atendimento->podeSerAlteradoPor($request->user()), 403);
 
+        $caminhos = $atendimento->fotos()->pluck('caminho')->all();
         $atendimento->delete();
+        Storage::disk('local')->delete($caminhos);
 
         return $this->voltar($request, $atendimento)->with('success', 'Atendimento excluído.');
+    }
+
+    /** Exibe uma foto do atendimento (disco privado: só usuários logados). */
+    public function foto(AtendimentoFoto $foto): StreamedResponse
+    {
+        $disco = Storage::disk('local');
+
+        abort_unless($disco->exists($foto->caminho), 404);
+
+        return $disco->response($foto->caminho, null, ['Cache-Control' => 'private, max-age=604800']);
+    }
+
+    private function dados(AtendimentoRequest $request): array
+    {
+        return Arr::except($request->validated(), ['fotos', 'remover_fotos']);
+    }
+
+    private function adicionarFotos(AtendimentoRequest $request, Atendimento $atendimento): void
+    {
+        foreach ($request->file('fotos', []) as $arquivo) {
+            $atendimento->fotos()->create([
+                'caminho' => $arquivo->store('atendimentos/'.$atendimento->id, 'local'),
+            ]);
+        }
     }
 
     /** Beneficiários ativos (mais o já vinculado, caso tenha sido inativado). */

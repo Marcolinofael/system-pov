@@ -289,6 +289,34 @@ h1, h2, h3, .card-title {
     background: var(--pov-ice);
 }
 
+/* Fotos dos atendimentos */
+.pov-thumb {
+    width: 88px;
+    height: 88px;
+    margin: 0 .5rem .5rem 0;
+    border-radius: .5rem;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(6, 28, 98, .15);
+    background: var(--pov-ice);
+}
+
+a:hover > .pov-thumb {
+    box-shadow: 0 4px 14px rgba(10, 159, 217, .45);
+}
+
+.pov-thumb-remover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.pov-thumb-remover .pov-thumb {
+    margin: 0;
+}
+
 /* Linha do tempo de atendimentos */
 .timeline > div > i.bg-warning {
     background: var(--pov-orange) !important;

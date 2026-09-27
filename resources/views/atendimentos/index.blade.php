@@ -76,6 +76,15 @@
                                 @if ($a->descricao)
                                     <br><small class="text-muted">{{ \Illuminate\Support\Str::limit($a->descricao, 90) }}</small>
                                 @endif
+                                @if ($a->fotos->isNotEmpty())
+                                    <div class="mt-1">
+                                        @foreach ($a->fotos as $foto)
+                                            <a href="{{ $foto->url }}" target="_blank" title="Ver foto ampliada">
+                                                <img src="{{ $foto->url }}" class="pov-thumb" style="width:44px;height:44px" alt="Foto" loading="lazy">
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </td>
                             <td class="text-center">{{ $a->quantidade ?? '—' }}</td>
                             <td>{{ $a->responsavel?->name ?? '—' }}</td>

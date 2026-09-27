@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Atendimento extends Model
 {
@@ -36,6 +37,8 @@ class Atendimento extends Model
     /** Tipos que representam entrega de itens (usam o campo quantidade). */
     public const ENTREGAS = ['cesta_basica', 'roupas', 'higiene', 'medicamentos', 'material_escolar', 'moveis'];
 
+    public const MAX_FOTOS = 5;
+
     protected $fillable = ['beneficiario_id', 'data', 'tipo', 'quantidade', 'descricao'];
 
     protected function casts(): array
@@ -49,6 +52,11 @@ class Atendimento extends Model
     public function beneficiario(): BelongsTo
     {
         return $this->belongsTo(Beneficiario::class);
+    }
+
+    public function fotos(): HasMany
+    {
+        return $this->hasMany(AtendimentoFoto::class)->orderBy('id');
     }
 
     public function responsavel(): BelongsTo

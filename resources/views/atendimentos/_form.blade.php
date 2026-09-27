@@ -46,6 +46,10 @@
                       placeholder="O que foi entregue ou combinado, observações da visita…">{{ old('descricao', $a->descricao) }}</textarea>
             @error('descricao') <span class="invalid-feedback">{{ $message }}</span> @enderror
         </div>
+
+        <div class="mt-3">
+            @include('atendimentos._fotos_campo', ['existentes' => $a->exists ? $a->fotos : collect(), 'id' => 'fotos'])
+        </div>
     </div>
     <div class="card-footer d-flex justify-content-between">
         <a href="{{ url()->previous() === url()->current() ? route('atendimentos.index') : url()->previous() }}" class="btn btn-default">Cancelar</a>

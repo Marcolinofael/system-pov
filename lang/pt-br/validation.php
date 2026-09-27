@@ -61,6 +61,8 @@ return [
         'tipo' => 'tipo de atendimento',
         'descricao' => 'descrição',
         'quantidade' => 'quantidade',
+        'foto' => 'foto',
+        'fotos' => 'fotos',
     ],
 
 ];
