@@ -33,7 +33,8 @@
                 <div class="card-body box-profile text-center">
                     <div class="mb-3">
                         @if ($b->foto)
-                            <a href="{{ $b->foto_url }}" target="_blank" title="Ver foto ampliada">
+                            <a href="{{ $b->foto_url }}" target="_blank" title="Ver foto ampliada"
+                               data-galeria="cadastro" data-legenda="{{ $b->nome_exibicao }}">
                                 @include('partials.avatar', ['b' => $b, 'tamanho' => 130])
                             </a>
                         @else
@@ -150,7 +151,9 @@
                                                         <div class="mb-2">{!! nl2br(e($a->descricao)) !!}</div>
                                                     @endif
                                                     @foreach ($a->fotos as $foto)
-                                                        <a href="{{ $foto->url }}" target="_blank" title="Ver foto ampliada">
+                                                        <a href="{{ $foto->url }}" target="_blank" title="Ver fotos"
+                                                           data-galeria="atendimento-{{ $a->id }}"
+                                                           data-legenda="{{ $a->tipo_label }} — {{ $a->data->format('d/m/Y') }}">
                                                             <img src="{{ $foto->url }}" class="pov-thumb" alt="Foto do atendimento" loading="lazy">
                                                         </a>
                                                     @endforeach

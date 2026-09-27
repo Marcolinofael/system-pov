@@ -79,7 +79,9 @@
                                 @if ($a->fotos->isNotEmpty())
                                     <div class="mt-1">
                                         @foreach ($a->fotos as $foto)
-                                            <a href="{{ $foto->url }}" target="_blank" title="Ver foto ampliada">
+                                            <a href="{{ $foto->url }}" target="_blank" title="Ver fotos"
+                                               data-galeria="atendimento-{{ $a->id }}"
+                                               data-legenda="{{ $a->beneficiario->nome_exibicao }} · {{ $a->tipo_label }} — {{ $a->data->format('d/m/Y') }}">
                                                 <img src="{{ $foto->url }}" class="pov-thumb" style="width:44px;height:44px" alt="Foto" loading="lazy">
                                             </a>
                                         @endforeach

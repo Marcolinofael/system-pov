@@ -52,5 +52,79 @@
         }
     });
 
+    /*
+     * Galeria em carrossel: links com o mesmo data-galeria abrem juntos num modal.
+     * <a href="foto.jpg" data-galeria="atendimento-12" data-legenda="Cesta básica — 10/09/2026">…</a>
+     * Sem JavaScript, o link continua abrindo a foto normalmente.
+     */
+    let modal = null;
+
+    function criarModal() {
+        const div = document.createElement('div');
+        div.className = 'modal fade pov-galeria';
+        div.tabIndex = -1;
+        div.setAttribute('aria-hidden', 'true');
+        div.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"></h5>
+                        <span class="pov-galeria-contador ml-auto mr-3"></span>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">&times;</button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="carousel slide" data-interval="false" data-keyboard="true" data-touch="true">
+                            <div class="carousel-inner"></div>
+                            <a class="carousel-control-prev" href="#" role="button" data-slide="prev" aria-label="Anterior">
+                                <span class="carousel-control-prev-icon"></span>
+                            </a>
+                            <a class="carousel-control-next" href="#" role="button" data-slide="next" aria-label="Próxima">
+                                <span class="carousel-control-next-icon"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        document.body.appendChild(div);
+
+        const $carrossel = window.jQuery(div.querySelector('.carousel'));
+        // Os controles apontam para o próprio carrossel (evita depender de id)
+        div.querySelectorAll('[data-slide]').forEach(controle => {
+            controle.addEventListener('click', ev => {
+                ev.preventDefault();
+                $carrossel.carousel(controle.dataset.slide);
+            });
+        });
+        $carrossel.on('slid.bs.carousel', () => atualizarContador(div));
+
+        return div;
+    }
+
+    function atualizarContador(div) {
+        const itens = div.querySelectorAll('.carousel-item');
+        const ativo = Array.from(itens).findIndex(i => i.classList.contains('active'));
+        div.querySelector('.pov-galeria-contador').textContent = itens.length > 1 ? `${ativo + 1} / ${itens.length}` : '';
+    }
+
+    document.addEventListener('click', function (e) {
+        const link = e.target.closest('a[data-galeria]');
+        if (!link || !window.jQuery || !window.jQuery.fn.carousel) return;
+        e.preventDefault();
+
+        modal = modal || criarModal();
+        const grupo = Array.from(document.querySelectorAll(`a[data-galeria="${link.dataset.galeria}"]`));
+        const inicio = grupo.indexOf(link);
+
+        modal.querySelector('.modal-title').textContent = link.dataset.legenda || 'Fotos';
+        modal.querySelector('.carousel-inner').innerHTML = grupo.map((a, i) => `
+            <div class="carousel-item ${i === inicio ? 'active' : ''}">
+                <img src="${a.href}" class="d-block mx-auto" alt="Foto ${i + 1}">
+            </div>`).join('');
+        modal.querySelectorAll('[data-slide]').forEach(c => c.classList.toggle('d-none', grupo.length < 2));
+        atualizarContador(modal);
+
+        window.jQuery(modal).modal('show');
+    });
+
     window.Pov = { reduzirImagem };
 })();
