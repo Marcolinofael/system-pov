@@ -71,6 +71,24 @@ if [ -z "${RCLONE_CONFIG_GDRIVE_TOKEN:-}" ]; then
     exec sleep infinity
 fi
 
+# Versões novas do "rclone authorize" entregam o resultado em base64
+# ({"client_id":"","client_secret":"","token":"{...}"}). Aceita esse formato também.
+case "$RCLONE_CONFIG_GDRIVE_TOKEN" in
+    \{*) ;;
+    *)
+        b64=$(printf '%s' "$RCLONE_CONFIG_GDRIVE_TOKEN" | tr -d ' \r\n' | tr -- '-_' '+/')
+        while [ $(( ${#b64} % 4 )) -ne 0 ]; do b64="${b64}="; done
+        token=$(printf '%s' "$b64" | base64 -d 2>/dev/null \
+            | sed -n 's/.*"token":"\(.*\)"}[[:space:]]*$/\1/p' | sed 's/\\"/"/g')
+        if [ -z "$token" ]; then
+            log "ERRO: GDRIVE_TOKEN em formato desconhecido. Cole o resultado do 'rclone authorize'."
+            exec sleep infinity
+        fi
+        export RCLONE_CONFIG_GDRIVE_TOKEN="$token"
+        log "Token do Google Drive decodificado do formato base64."
+        ;;
+esac
+
 log "Agendador de backup ativo: todo dia às ${HORA}, mantendo ${DIAS} dias em '${PASTA}'."
 
 if [ "${BACKUP_AO_INICIAR:-1}" = "1" ]; then
