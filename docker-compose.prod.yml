@@ -1,0 +1,51 @@
+# Produção (Dokploy - serviço do tipo Compose).
+# As variáveis ${...} vêm da aba "Environment" do serviço no Dokploy.
+# Não publica portas: o domínio é roteado pelo Traefik do Dokploy para a porta 80 do serviço "app".
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      APP_NAME: ${APP_NAME:-Oberland JR Vive}
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL}
+      APP_LOCALE: pt-br
+      APP_FALLBACK_LOCALE: en
+      LOG_CHANNEL: stderr
+      SESSION_DRIVER: database
+      SESSION_SECURE_COOKIE: "true"
+      CACHE_STORE: database
+      QUEUE_CONNECTION: sync
+      DB_CONNECTION: mysql
+      DB_HOST: pov-db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-system_pov}
+      DB_USERNAME: ${DB_USERNAME:-pov}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    depends_on:
+      pov-db:
+        condition: service_healthy
+
+  # Nome único para não colidir com outros serviços "db" na rede do Dokploy
+  pov-db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-system_pov}
+      MYSQL_USER: ${DB_USERNAME:-pov}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - pov-dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  pov-dbdata:
