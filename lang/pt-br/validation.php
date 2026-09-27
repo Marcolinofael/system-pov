@@ -57,6 +57,10 @@ return [
         'cor_raca' => 'cor / raça',
         'data_cadastro' => 'data do cadastro',
         'saude' => 'saúde',
+        'beneficiario_id' => 'família',
+        'tipo' => 'tipo de atendimento',
+        'descricao' => 'descrição',
+        'quantidade' => 'quantidade',
     ],
 
 ];

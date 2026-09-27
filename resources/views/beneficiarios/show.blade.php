@@ -68,6 +68,87 @@
         </div>
 
         <div class="col-lg-8">
+            {{-- Atendimentos --}}
+            <div class="card card-secondary card-outline" id="atendimentos">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-hand-holding-heart mr-1"></i> Atendimentos ({{ $b->atendimentos->count() }})</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-sm btn-pov-orange" data-toggle="collapse" data-target="#novo-atendimento">
+                            <i class="fas fa-plus"></i> Registrar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="collapse {{ $errors->hasAny(['data', 'tipo', 'quantidade', 'descricao']) ? 'show' : '' }}" id="novo-atendimento">
+                    <form method="POST" action="{{ route('atendimentos.store') }}" class="card-body border-bottom" style="background: var(--pov-ice)">
+                        @csrf
+                        <input type="hidden" name="beneficiario_id" value="{{ $b->id }}">
+                        <input type="hidden" name="origem" value="beneficiario">
+                        <div class="form-row">
+                            @include('partials.campo', ['nome' => 'data', 'rotulo' => 'Data', 'tipo' => 'date', 'valor' => today()->format('Y-m-d'), 'col' => 'col-md-3', 'obrigatorio' => true])
+                            <div class="form-group col-md-6">
+                                <label for="tipo">Tipo <span class="text-danger">*</span></label>
+                                <select id="tipo" name="tipo" required class="form-control @error('tipo') is-invalid @enderror">
+                                    <option value="">Selecione…</option>
+                                    @foreach (\App\Models\Atendimento::TIPOS as $valor => $rotulo)
+                                        <option value="{{ $valor }}" @selected(old('tipo') === $valor)>{{ $rotulo }}</option>
+                                    @endforeach
+                                </select>
+                                @error('tipo') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                            </div>
+                            @include('partials.campo', ['nome' => 'quantidade', 'rotulo' => 'Quantidade', 'tipo' => 'number', 'col' => 'col-md-3'])
+                        </div>
+                        <div class="form-group">
+                            <textarea name="descricao" rows="2" class="form-control @error('descricao') is-invalid @enderror"
+                                      placeholder="O que foi entregue ou combinado (opcional)">{{ old('descricao') }}</textarea>
+                            @error('descricao') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar atendimento</button>
+                    </form>
+                </div>
+
+                <div class="card-body">
+                    @if ($b->atendimentos->isEmpty())
+                        <p class="text-muted mb-0 text-center py-2">Nenhum atendimento registrado para esta família ainda.</p>
+                    @else
+                        <div class="timeline timeline-inverse mb-0">
+                            @foreach ($b->atendimentos->groupBy(fn ($a) => $a->data->format('Y-m-d')) as $dia => $doDia)
+                                <div class="time-label">
+                                    <span class="bg-primary">{{ \Illuminate\Support\Carbon::parse($dia)->format('d/m/Y') }}</span>
+                                </div>
+                                @foreach ($doDia as $a)
+                                    <div>
+                                        <i class="{{ $a->icone }} bg-warning"></i>
+                                        <div class="timeline-item">
+                                            <span class="time">
+                                                @if ($a->podeSerAlteradoPor(auth()->user()))
+                                                    <a href="{{ route('atendimentos.edit', [$a, 'origem' => 'beneficiario']) }}" title="Editar"><i class="fas fa-edit"></i></a>
+                                                    <form action="{{ route('atendimentos.destroy', $a) }}" method="POST" class="d-inline"
+                                                          onsubmit="return confirm('Excluir este atendimento?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <input type="hidden" name="origem" value="beneficiario">
+                                                        <button class="btn btn-link btn-sm p-0 ml-2 text-danger" title="Excluir"><i class="fas fa-trash"></i></button>
+                                                    </form>
+                                                @endif
+                                            </span>
+                                            <h3 class="timeline-header">
+                                                <strong>{{ $a->tipo_label }}</strong>{{ $a->quantidade ? ' · '.$a->quantidade.' '.($a->quantidade > 1 ? 'unidades' : 'unidade') : '' }}
+                                                <small class="text-muted d-block">por {{ $a->responsavel?->name ?? 'usuário removido' }}</small>
+                                            </h3>
+                                            @if ($a->descricao)
+                                                <div class="timeline-body">{!! nl2br(e($a->descricao)) !!}</div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endforeach
+                            <div><i class="fas fa-flag bg-gray"></i></div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
             {{-- Identificação --}}
             <div class="card">
                 <div class="card-header"><h3 class="card-title"><i class="fas fa-id-card mr-1"></i> Identificação</h3></div>

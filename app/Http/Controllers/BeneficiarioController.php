@@ -18,6 +18,7 @@ class BeneficiarioController extends Controller
             ->when($request->filled('status'), fn ($q) => $q->where('ativo', $request->query('status') === 'ativo'))
             ->when($request->filled('necessidade'), fn ($q) => $q->whereJsonContains('necessidades', $request->query('necessidade')))
             ->withCount('familiares')
+            ->withMax('atendimentos', 'data')
             ->orderBy('nome')
             ->paginate(15)
             ->withQueryString();
@@ -49,7 +50,7 @@ class BeneficiarioController extends Controller
 
     public function show(Beneficiario $beneficiario): View
     {
-        $beneficiario->load('familiares', 'cadastradoPor');
+        $beneficiario->load('familiares', 'cadastradoPor', 'atendimentos.responsavel');
 
         return view('beneficiarios.show', compact('beneficiario'));
     }

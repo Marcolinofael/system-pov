@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AtendimentoController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\BeneficiarioController;
 use App\Http\Controllers\DashboardController;
@@ -17,6 +18,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
 
     Route::resource('beneficiarios', BeneficiarioController::class)->parameters(['beneficiarios' => 'beneficiario']);
+
+    Route::resource('atendimentos', AtendimentoController::class)->except('show');
 
     Route::resource('users', UserController::class)->except('show')->middleware('can:admin');
 });

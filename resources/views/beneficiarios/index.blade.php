@@ -51,6 +51,7 @@
                         <th>Telefone</th>
                         <th>Bairro</th>
                         <th class="text-center">Família</th>
+                        <th>Último atendimento</th>
                         <th>Status</th>
                         <th class="text-right">Ações</th>
                     </tr>
@@ -78,6 +79,15 @@
                                 </span>
                             </td>
                             <td>
+                                @if ($b->atendimentos_max_data)
+                                    @php($ultimo = \Illuminate\Support\Carbon::parse($b->atendimentos_max_data))
+                                    {{ $ultimo->format('d/m/Y') }}
+                                    <br><small class="{{ $ultimo->lt(now()->subDays(60)) ? 'text-danger' : 'text-muted' }}">{{ $ultimo->diffForHumans() }}</small>
+                                @else
+                                    <span class="text-muted">Nunca</span>
+                                @endif
+                            </td>
+                            <td>
                                 <span class="badge badge-{{ $b->ativo ? 'success' : 'secondary' }}">
                                     {{ $b->ativo ? 'Ativo' : 'Inativo' }}
                                 </span>
@@ -99,7 +109,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-5">
+                            <td colspan="8" class="text-center text-muted py-5">
                                 <i class="fas fa-hands-helping fa-2x mb-2 d-block"></i>
                                 Nenhum beneficiário encontrado.
                             </td>

@@ -121,6 +121,11 @@ class Beneficiario extends Model
         return $this->hasMany(Familiar::class)->orderBy('id');
     }
 
+    public function atendimentos(): HasMany
+    {
+        return $this->hasMany(Atendimento::class)->orderByDesc('data')->orderByDesc('id');
+    }
+
     public function cadastradoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');

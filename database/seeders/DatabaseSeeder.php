@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Atendimento;
 use App\Models\Beneficiario;
 use App\Models\Familiar;
 use App\Models\User;
@@ -37,6 +38,15 @@ class DatabaseSeeder extends Seeder
                         'nome' => fake()->name(),
                         'parentesco' => fake()->randomElement(array_keys(Familiar::PARENTESCOS)),
                         'data_nascimento' => fake()->dateTimeBetween('-60 years'),
+                    ]);
+                }
+
+                foreach (range(1, fake()->numberBetween(0, 5)) as $i) {
+                    $b->atendimentos()->create([
+                        'data' => fake()->dateTimeBetween('-5 months'),
+                        'tipo' => fake()->randomElement(array_keys(Atendimento::TIPOS)),
+                        'quantidade' => fake()->optional()->numberBetween(1, 3),
+                        'descricao' => fake()->optional()->sentence(),
                     ]);
                 }
             });

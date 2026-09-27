@@ -75,6 +75,12 @@ return [
             'route' => 'beneficiarios.create',
             'icon' => 'fas fa-fw fa-user-plus',
         ],
+        [
+            'text' => 'Atendimentos',
+            'route' => 'atendimentos.index',
+            'icon' => 'fas fa-fw fa-hand-holding-heart',
+            'active' => ['atendimentos', 'atendimentos/*'],
+        ],
 
         [
             'header' => 'ADMINISTRAÇÃO',

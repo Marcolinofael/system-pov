@@ -254,6 +254,16 @@ h1, h2, h3, .card-title {
     color: #9a3f10;
 }
 
+/* Linha do tempo de atendimentos */
+.timeline > div > i.bg-warning {
+    background: var(--pov-orange) !important;
+    color: #fff !important;
+}
+
+.timeline::before {
+    background: var(--pov-sky-light);
+}
+
 /* Seções do formulário */
 .pov-section-icon {
     display: inline-flex;
@@ -306,6 +316,11 @@ h1, h2, h3, .card-title {
 .login-page .login-box {
     position: relative;
     z-index: 1;
+}
+
+/* O AdminLTE escreve o nome ao lado da imagem; a logo já traz o nome, então só a imagem aparece */
+.login-page .login-logo a {
+    font-size: 0;
 }
 
 .login-page .login-logo img {
