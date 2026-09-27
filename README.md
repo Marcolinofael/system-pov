@@ -93,7 +93,7 @@ Configuração (uma vez):
 
 1. Instale o rclone no seu computador: `winget install Rclone.Rclone`
 2. Gere o token (abre o navegador para você autorizar a conta Google):
-   `rclone authorize "drive" "eyJzY29wZSI6ImRyaXZlLmZpbGUifQ=="`
+   `rclone authorize "drive" "eyJzY29wZSI6ImRyaXZlLmZpbGUifQ"`
    (escopo `drive.file`: o sistema só enxerga os arquivos que ele mesmo cria no Drive)
 3. Copie o JSON entre `--->` e `<---` e adicione no Environment do Dokploy, entre aspas simples:
    `GDRIVE_TOKEN='{"access_token":"...","refresh_token":"...",...}'`
