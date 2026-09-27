@@ -1,0 +1,34 @@
+# Ambiente de DESENVOLVIMENTO local.
+# Em produção (Dokploy) use o Dockerfile + um banco MySQL criado no próprio Dokploy.
+services:
+  app:
+    build: .
+    ports:
+      - "8000:80"
+    environment:
+      APP_ENV: local
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: system_pov
+      MYSQL_USER: pov
+      MYSQL_PASSWORD: pov_local_dev
+      MYSQL_ROOT_PASSWORD: root_local_dev
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot_local_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  dbdata:
